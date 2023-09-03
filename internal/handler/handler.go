@@ -11,10 +11,6 @@ import (
 var stor = storage.NewStorage()
 
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
-	if !strings.Contains(r.Host, "http://") {
-		r.Host = "http://" + r.Host
-	}
-
 	if r.Method == http.MethodPost {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
@@ -29,7 +25,7 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 		shortURL := stor.Add(string(body))
 
 		w.WriteHeader(http.StatusCreated)
-		_, err = w.Write([]byte(r.Host + "/" + shortURL))
+		_, err = w.Write([]byte("http://" + r.Host + "/" + shortURL))
 		if err != nil {
 			fmt.Printf("error. response write error: %#v\n", err.Error())
 			http.Error(w, err.Error(), http.StatusBadRequest)
